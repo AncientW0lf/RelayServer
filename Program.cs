@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.IO;
 using System;
 using System.Linq;
@@ -6,6 +5,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using System.Text.Json;
 using RelayServer.Server;
+using System.Timers;
 
 namespace RelayServer
 {
@@ -16,6 +16,12 @@ namespace RelayServer
         public const string TemplateFile = "template.json";
 
         public static DomainLink[] Settings { get; private set; }
+
+        private static readonly Timer _settingsReloader = new Timer
+        {
+            AutoReset = true,
+            Interval = 10_000
+        };
 
         public static int Main(string[] args)
         {
@@ -37,15 +43,9 @@ namespace RelayServer
                 return 0;
             }
 
-            try
-            {
-                Settings = LoadSettings();
-            }
-            catch (Exception exc)
-            {
-                Console.WriteLine($"Could not read settings: {exc.Message}");
-                return 2;
-            }
+            _settingsReloader.Elapsed += (_, _) => ReloadSettings();
+            _settingsReloader.Start();
+            ReloadSettings();
 
             CreateHostBuilder(args).Build().Run();
 
@@ -79,9 +79,19 @@ namespace RelayServer
             File.WriteAllText(TemplateFile, value);
         }
 
-        private static DomainLink[] LoadSettings()
+        private static void ReloadSettings()
         {
-            return JsonSerializer.Deserialize<DomainLink[]>(File.ReadAllText(SettingsFile));
+            try
+            {
+                Settings = JsonSerializer.Deserialize<DomainLink[]>(File.ReadAllText(SettingsFile));
+            }
+            catch (Exception exc)
+            {
+                Console.WriteLine($"Could not read settings at [{DateTime.Now:s}]: {exc.Message}");
+                return;
+            }
+
+            Console.WriteLine($"Reloaded settings at [{DateTime.Now:s}].");
         }
     }
 }
