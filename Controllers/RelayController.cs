@@ -26,7 +26,16 @@ namespace RelayServer.Controllers
 
             using var client = new HttpClient();
 
-            HttpResponseMessage res = await client.GetAsync($"http://{localIp}/{url}");
+            HttpResponseMessage res;
+            try
+            {
+                res = await client.GetAsync($"http://{localIp}/{url}");
+            }
+            catch (HttpRequestException exc)
+            {
+                return this.Problem($"Could not fetch data from local server: {exc.Message}");
+            }
+
             string type = res.Content.Headers.GetValues("Content-Type").First();
             byte[] content = await res.Content.ReadAsByteArrayAsync();
 
