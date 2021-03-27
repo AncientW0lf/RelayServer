@@ -20,7 +20,7 @@ namespace RelayServer
         private static readonly Timer _settingsReloader = new Timer
         {
             AutoReset = true,
-            Interval = 10_000
+            Interval = 30_000
         };
 
         public static int Main(string[] args)
