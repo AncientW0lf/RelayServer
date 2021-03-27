@@ -25,11 +25,9 @@ namespace RelayServer
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
-            {
                 app.UseDeveloperExceptionPage();
-            }
-
-            app.UseHttpsRedirection();
+            else
+                app.UseHttpsRedirection();
 
             app.UseRouting();
 

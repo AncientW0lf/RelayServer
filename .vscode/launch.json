@@ -6,10 +6,27 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceFolder}/scripts/debug.sh",
+            "program": "${workspaceFolder}/bin/Debug/net5.0/RelayServer.dll",
+            "args": [],
             "cwd": "${workspaceFolder}",
-            "console": "integratedTerminal"
+            "stopAtEntry": false,
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development"
+            },
+            "console": "integratedTerminal",
+            "launchBrowser": {
+                "enabled": true
+            }
         },
+        // {
+        //     "name": "Debug web",
+        //     "type": "coreclr",
+        //     "request": "launch",
+        //     "preLaunchTask": "build",
+        //     "program": "${workspaceFolder}/scripts/debug.sh",
+        //     "cwd": "${workspaceFolder}",
+        //     "console": "integratedTerminal"
+        // },
         {
             "name": "Debug template file creation",
             "type": "coreclr",
