@@ -19,15 +19,18 @@ namespace RelayServer.Controllers
             //             Request.Path,
             //             Request.QueryString);
 
+            string localIp = Program.Settings.FirstOrDefault(a => a.DomainName.Equals(Request.Host.Host))?.LocalIp;
+
+            if (string.IsNullOrWhiteSpace(localIp))
+                return this.BadRequest($"\"{Request.Host.Host}\" is not a valid domain name for this server.");
+
             using var client = new HttpClient();
 
-            //TODO: Replace fixed IP with configuration file for links with domain names and local IPs.
-            HttpResponseMessage res = await client.GetAsync($"http://192.168.178.33/{url}");
+            HttpResponseMessage res = await client.GetAsync($"http://{localIp}/{url}");
             string type = res.Content.Headers.GetValues("Content-Type").First();
             byte[] content = await res.Content.ReadAsByteArrayAsync();
 
             return new FileContentResult(content, type);
-            //Ok($"Received: {url} ({requestUrl})");
         }
     }
 }
