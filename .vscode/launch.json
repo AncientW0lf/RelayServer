@@ -8,10 +8,20 @@
             "preLaunchTask": "build",
             "program": "${workspaceFolder}/scripts/debug.sh",
             "cwd": "${workspaceFolder}",
-            "console": "integratedTerminal",
-            "launchBrowser": {
-                "enabled": true
-            }
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "Debug template file creation",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/bin/Debug/net5.0/RelayServer.dll",
+            "args": [
+                "-t"
+            ],
+            "cwd": "${workspaceFolder}",
+            "stopAtEntry": false,
+            "console": "integratedTerminal"
         }
     ]
 }
