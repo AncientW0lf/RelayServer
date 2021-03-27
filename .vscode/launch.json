@@ -16,17 +16,9 @@
             "console": "integratedTerminal",
             "launchBrowser": {
                 "enabled": true
-            }
+            },
+            "requireExactSource": true
         },
-        // {
-        //     "name": "Debug web",
-        //     "type": "coreclr",
-        //     "request": "launch",
-        //     "preLaunchTask": "build",
-        //     "program": "${workspaceFolder}/scripts/debug.sh",
-        //     "cwd": "${workspaceFolder}",
-        //     "console": "integratedTerminal"
-        // },
         {
             "name": "Debug template file creation",
             "type": "coreclr",
@@ -38,7 +30,8 @@
             ],
             "cwd": "${workspaceFolder}",
             "stopAtEntry": false,
-            "console": "integratedTerminal"
+            "console": "integratedTerminal",
+            "requireExactSource": true
         }
     ]
 }
