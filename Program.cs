@@ -17,11 +17,15 @@ namespace RelayServer
 
         public static DomainLink[] Settings { get; private set; }
 
-        private static readonly Timer _settingsReloader = new Timer
+        private static readonly FileSystemWatcher _settingsReloader = new FileSystemWatcher
         {
-            AutoReset = true,
-            Interval = 30_000
+            Filter = SettingsFile,
+            Path = Environment.CurrentDirectory,
+            IncludeSubdirectories = false,
+            NotifyFilter = NotifyFilters.LastWrite
         };
+
+        private static bool _reloadingSettings = false;
 
         public static int Main(string[] args)
         {
@@ -43,11 +47,13 @@ namespace RelayServer
                 return 0;
             }
 
-            _settingsReloader.Elapsed += (_, _) => ReloadSettings();
-            _settingsReloader.Start();
+            _settingsReloader.Changed += (_, _) => ReloadSettings();
+            _settingsReloader.EnableRaisingEvents = true;
             ReloadSettings();
 
             CreateHostBuilder(args).Build().Run();
+
+            _settingsReloader.Dispose();
 
             return 0;
         }
@@ -81,6 +87,11 @@ namespace RelayServer
 
         private static void ReloadSettings()
         {
+            if (_reloadingSettings)
+                return;
+
+            _reloadingSettings = true;
+
             try
             {
                 Settings = JsonSerializer.Deserialize<DomainLink[]>(File.ReadAllText(SettingsFile));
@@ -92,6 +103,8 @@ namespace RelayServer
             }
 
             Console.WriteLine($"Reloaded settings at [{DateTime.Now:s}].");
+
+            _reloadingSettings = false;
         }
     }
 }
