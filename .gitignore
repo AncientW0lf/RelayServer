@@ -450,3 +450,4 @@ $RECYCLE.BIN/
 # Custom
 template.json
 settings.json
+wwwroot/**
