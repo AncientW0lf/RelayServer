@@ -8,7 +8,13 @@ namespace RelayServer.Controllers
     [ApiController]
     public class RelayController : ControllerBase
     {
-        [HttpGet("{*url}")]
+        [HttpGet("")]
+        public async Task<IActionResult> GetIndex(string url)
+        {
+            return await Get(url);
+        }
+
+        [HttpGet(@"{url:regex(^(?!\.well-known).*$)}")]
         public async Task<IActionResult> Get(string url)
         {
             // string requestUrl = string.Concat(
