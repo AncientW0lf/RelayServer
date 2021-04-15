@@ -27,6 +27,8 @@ namespace RelayServer
 
         private static bool _reloadingSettings = false;
 
+        private static bool _noHttps = false;
+
         public static int Main(string[] args)
         {
             if (args.Contains("-t") || args.Contains("--template"))
@@ -46,6 +48,8 @@ namespace RelayServer
                     $"please rename it to \"{SettingsFile}\".");
                 return 0;
             }
+
+            ToggleHttps(args);
 
             _settingsReloader.Changed += (_, _) => ReloadSettings();
             _settingsReloader.EnableRaisingEvents = true;
@@ -67,7 +71,10 @@ namespace RelayServer
 #if DEBUG
                     webBuilder.UseUrls("http://*:8080");
 #else
-                    webBuilder.UseUrls("http://*:80", "https://*:443");
+                    if(_noHttps)
+                        webBuilder.UseUrls("http://*:80", "https://*:443");
+                    else
+                        webBuilder.UseUrls("http://*:80");
 #endif
                 });
 
@@ -105,6 +112,14 @@ namespace RelayServer
             Console.WriteLine($"Reloaded settings at [{DateTime.Now:s}].");
 
             _reloadingSettings = false;
+        }
+
+        private static void ToggleHttps(string[] args)
+        {
+            if (!args.Contains("-h") && !args.Contains("--no-https"))
+                return;
+
+            _noHttps = true;
         }
     }
 }
