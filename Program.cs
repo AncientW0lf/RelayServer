@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using System.Text.Json;
 using RelayServer.Server;
-using System.Timers;
+using System.Security.Cryptography.X509Certificates;
 
 namespace RelayServer
 {
@@ -71,10 +71,20 @@ namespace RelayServer
 #if DEBUG
                     webBuilder.UseUrls("http://*:8080");
 #else
-                    if(_noHttps)
+                    if (_noHttps)
                         webBuilder.UseUrls("http://*:80");
                     else
+                    {
+                        webBuilder.ConfigureKestrel(o =>
+                        {
+                            o.ConfigureHttpsDefaults(o2 =>
+                            {
+                                o2.ServerCertificate = X509Certificate2.CreateFromPemFile("cert/fullchain.pem", "cert/privkey.pem");
+                            });
+                        });
+
                         webBuilder.UseUrls("http://*:80", "https://*:443");
+                    }
 #endif
                 });
 
