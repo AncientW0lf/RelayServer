@@ -72,9 +72,9 @@ namespace RelayServer
                     webBuilder.UseUrls("http://*:8080");
 #else
                     if(_noHttps)
-                        webBuilder.UseUrls("http://*:80", "https://*:443");
-                    else
                         webBuilder.UseUrls("http://*:80");
+                    else
+                        webBuilder.UseUrls("http://*:80", "https://*:443");
 #endif
                 });
 
