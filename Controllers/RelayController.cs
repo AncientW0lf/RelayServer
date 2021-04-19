@@ -8,13 +8,13 @@ namespace RelayServer.Controllers
     [ApiController]
     public class RelayController : ControllerBase
     {
-        [HttpGet("")]
-        public async Task<IActionResult> GetIndex(string url)
+        [HttpGet(".well-known/{*url}")]
+        public IActionResult GetSSLCertCheck(string url)
         {
-            return await Get(url);
+            return File($".well-known/{url}", "text/plain");
         }
 
-        [HttpGet(@"{url:regex(^(?!\.well-known).*$)}")]
+        [HttpGet(@"{*url}")]
         public async Task<IActionResult> Get(string url)
         {
             // string requestUrl = string.Concat(

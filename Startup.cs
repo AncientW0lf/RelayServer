@@ -33,12 +33,6 @@ namespace RelayServer
 
             app.UseAuthorization();
 
-            app.UseStaticFiles(new StaticFileOptions
-            {
-                ServeUnknownFileTypes = true,
-                DefaultContentType = "text/plain"
-            });
-
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
