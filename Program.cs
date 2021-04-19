@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using System.Text.Json;
 using RelayServer.Server;
-using System.Security.Cryptography.X509Certificates;
 
 namespace RelayServer
 {
@@ -27,10 +26,14 @@ namespace RelayServer
 
         private static bool _reloadingSettings = false;
 
+#pragma warning disable CS0414
         private static bool _noHttps = false;
+#pragma warning restore CS0414
 
         public static int Main(string[] args)
         {
+            AppDomain.CurrentDomain.UnhandledException += (_, _) => DisposeVars();
+
             if (args.Contains("-t") || args.Contains("--template"))
             {
                 try
@@ -57,7 +60,7 @@ namespace RelayServer
 
             CreateHostBuilder(args).Build().Run();
 
-            _settingsReloader.Dispose();
+            DisposeVars();
 
             return 0;
         }
@@ -130,6 +133,11 @@ namespace RelayServer
                 return;
 
             _noHttps = true;
+        }
+
+        private static void DisposeVars()
+        {
+            _settingsReloader.Dispose();
         }
     }
 }
