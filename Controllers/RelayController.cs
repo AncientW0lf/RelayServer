@@ -31,6 +31,7 @@ namespace RelayServer.Controllers
                 return this.BadRequest($"\"{Request.Host.Host}\" is not a valid domain name for this server.");
 
             using var client = new HttpClient();
+            client.DefaultRequestHeaders.Add("OriginalUrl", Request.Host.Host);
 
             HttpResponseMessage res;
             try
