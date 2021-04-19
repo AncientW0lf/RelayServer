@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using System.Text.Json;
 using RelayServer.Server;
+using System.Security.Cryptography.X509Certificates;
 
 namespace RelayServer
 {
