@@ -47,11 +47,16 @@ namespace RelayServer
                         Program.Settings.FirstOrDefault(a => a.DomainName.Equals(uri.Host.Host)) != null
                             && !uri.Path.ToString().StartsWith("/.well-known")),
                     RequestModifier = (req, _) => Task.Run(() =>
-                        req.RequestUri = new Uri(req.RequestUri
+                    {
+                        var newUri = new Uri(req.RequestUri
                             .ToString()
                             .Replace(
                                 req.RequestUri.Authority,
-                                Program.Settings.FirstOrDefault(a => a.DomainName.Equals(req.RequestUri.Host)).LocalIp)))
+                                Program.Settings.FirstOrDefault(a => a.DomainName.Equals(req.RequestUri.Host)).LocalIp)
+                            .Replace("https://", "http://"));
+
+                        req.RequestUri = newUri;
+                    })
                 }
             }, res => Task.Run(() => Console.WriteLine($"Proxied \"{res.OriginalUri}\" to \"{res.ProxiedUri}\".")));
 
